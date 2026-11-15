@@ -213,6 +213,41 @@ kbd{font:600 12px var(--mono);background:#fff;border:1px solid var(--line-2);bor
 .empty h2{font:700 30px/1.2 var(--serif);margin:0}
 .empty p{color:var(--ink-2)}
 
+
+/* machetes */
+.mhead{padding:44px 0 8px;max-width:880px}
+.mtitle{font:800 clamp(56px,8vw,88px)/.9 var(--serif);color:var(--blue);margin:0;letter-spacing:-.03em}
+.k-ok{font-size:13px;font-weight:700;color:var(--green);background:var(--green-wash);border-radius:var(--r-pill);padding:1px 9px;white-space:nowrap}
+.k-trap{font-size:13px;font-weight:700;color:var(--brick);background:var(--brick-wash);border-radius:var(--r-pill);padding:1px 9px;white-space:nowrap}
+.mseg{margin-top:22px;flex-wrap:wrap;border-radius:18px}
+.mseg button[aria-selected="true"]{background:var(--ink);color:#fff}
+.munit{max-width:880px;padding-top:18px}
+.mtoc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+.mtoc a{font-size:14px;font-weight:600;color:var(--blue-ink);background:var(--paper);border:1px solid var(--blue-line);border-radius:var(--r-pill);padding:5px 12px;text-decoration:none}
+.mtoc a:hover{background:var(--blue-wash)}
+.msec{background:var(--paper);border-radius:var(--r-sheet);box-shadow:var(--shadow);border-top:4px solid var(--blue);padding:22px 26px 24px;margin:0 0 18px;scroll-margin-top:80px}
+.munit[data-unit="U4"] .msec{border-top-color:#5B21B6}
+.munit[data-unit="U5"] .msec{border-top-color:var(--brick)}
+.msec h2{font:700 24px/1.2 var(--serif);margin:0 0 12px;letter-spacing:-.01em;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.msec p,.msec li{font-size:16px;color:var(--ink)}
+.msec p{margin:10px 0}
+.msec ul,.msec ol{margin:8px 0;padding-left:22px}
+.msec li{margin:4px 0}
+.msec code{font:500 14px var(--mono);background:#F6F3EC;border:1px solid var(--line);border-radius:5px;padding:0 5px;white-space:nowrap}
+.hot{font:700 13px var(--sans);color:var(--brick);background:var(--brick-wash);border-radius:var(--r-pill);padding:3px 10px}
+.mt{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+.mt th{text-align:left;font-weight:700;font-size:13.5px;color:var(--ink-2);background:var(--paper-2);border-bottom:1.5px solid var(--line-2);padding:8px 10px}
+.mt td{border-bottom:1px solid var(--line);padding:8px 10px;vertical-align:top}
+.mt tr:last-child td{border-bottom:0}
+.ok,.trap{border-radius:10px;padding:11px 14px;margin:12px 0;font-size:15.5px;line-height:1.5}
+.ok{background:var(--green-wash);border:1px solid var(--green-line)}
+.ok b:first-child{color:var(--green)}
+.trap{background:var(--brick-wash);border:1px solid var(--brick-line)}
+.trap b:first-child{color:var(--brick)}
+.tip{background:var(--blue-wash);border-radius:10px;padding:11px 14px;font-size:15.5px}
+.msec .code{margin:12px 0}
+@media (max-width:560px){.msec{padding:16px 16px 18px}.mt{font-size:14px;display:block;overflow-x:auto}.mt td,.mt th{padding:7px 8px}.mseg button{padding:7px 12px;font-size:14px}}
+
 @media (max-width:900px){
   .hero{grid-template-columns:1fr;gap:36px;padding-top:36px}
   .units{grid-template-columns:1fr}
@@ -239,6 +274,7 @@ kbd{font:600 12px var(--mono);background:#fff;border:1px solid var(--line-2);bor
   <button class="brand" data-go="home" aria-label="Ir al inicio"><b>Σ<i>ACO</i></b><span>Arquitectura de Computadoras</span></button>
   <nav class="nav" aria-label="Secciones">
     <button data-go="home" aria-current="page">Inicio</button>
+    <button data-go="mach">Machetes</button>
     <button data-go="errors" id="navErr">Mis errores <span class="n" id="navErrN" hidden>0</span></button>
   </nav>
 </div></header>
@@ -309,6 +345,350 @@ kbd{font:600 12px var(--mono);background:#fff;border:1px solid var(--line-2);bor
 
 <!-- RESULTS -->
 <section class="view" id="v-res" aria-label="Resultado"><div class="res" id="res"></div></section>
+
+<!-- MACHETES -->
+<section class="view" id="v-mach" aria-labelledby="t-mach">
+  <div class="mhead">
+    <h1 class="mtitle" id="t-mach">Machetes</h1>
+    <p class="lede">Lo que sí o sí tenés que saber para el 2º parcial, separado por unidad. Las marcas <span class="k-ok">oficial</span> son respuestas reales de Moodle; las <span class="k-trap">trampa</span> son los errores que más se repiten.</p>
+    <div class="seg mseg" role="tablist" aria-label="Unidad">
+      <button role="tab" data-u="U3" aria-selected="true">Unidad 3 · Arquitectura</button>
+      <button role="tab" data-u="U4" aria-selected="false">Unidad 4 · Assembler</button>
+      <button role="tab" data-u="U5" aria-selected="false">Unidad 5 · Memorias</button>
+    </div>
+  </div>
+
+  <!-- ================= U3 ================= -->
+  <div class="munit" data-unit="U3">
+    <nav class="mtoc" aria-label="Temas de la Unidad 3">
+      <a href="#m3-vn">Von Neumann</a><a href="#m3-hv">Harvard</a><a href="#m3-bus">Buses</a><a href="#m3-pot">Potencial</a><a href="#m3-cpu">CPU y registros</a><a href="#m3-ciclo">Ciclo de instrucción</a><a href="#m3-uc">UC cableada / micro</a><a href="#m3-cisc">CISC / RISC</a><a href="#m3-isa">Instrucciones (ISA)</a><a href="#m3-int">Interrupciones</a><a href="#m3-es">Subsistema de E/S</a>
+    </nav>
+
+    <article class="msec" id="m3-vn"><h2>1. Arquitectura de Von Neumann</h2>
+      <p><b>Idea central:</b> una <b>única memoria</b> guarda <b>instrucciones y datos juntos</b> (programa almacenado), y un <b>único juego de buses</b> conecta todo.</p>
+      <p><b>Las 3 propiedades:</b></p>
+      <ol><li>Un único espacio de memoria de lectura/escritura para instrucciones y datos.</li><li>Se accede a la memoria <b>por posición (dirección)</b>, sea dato o instrucción.</li><li>Ejecución <b>secuencial</b>: después de una instrucción viene la siguiente (salvo saltos).</li></ol>
+      <p><b>Programa almacenado:</b> las instrucciones, ya en lenguaje máquina, están guardadas en la <b>memoria principal</b>.</p>
+      <div class="ok"><b>Oficial · qué forma parte:</b> Unidad Central de Proceso · Registros · Memoria Principal · Subsistema de Entrada-Salida · Buses de direcciones, datos y control.</div>
+      <div class="trap"><b>Trampa:</b> "Memoria de instrucciones", "Memoria de datos", "Memoria caché" y "Buses dobles" <b>NO</b> forman parte de Von Neumann (las primeras y los buses dobles son de Harvard).</div>
+      <p><b>Cuello de botella de Von Neumann:</b> como instrucciones y datos comparten el mismo bus, la CPU <b>no puede traer una instrucción y un dato al mismo tiempo</b>.</p>
+      <p><b>Cómo leer el plano:</b> CPU arriba a la izquierda, memoria principal a la derecha, los 3 buses en el medio (direcciones →, datos ↔, control ↔), y los tres bajan al subsistema de E/S, que conecta los periféricos (entrada: flecha hacia el subsistema; salida: flecha hacia afuera; E/S: doble).</p>
+      <p>El profe marcó en la diapositiva: <b>caché adentro de la CPU</b> (L1I/L1D por núcleo, L2 por núcleo, L3 compartida) y la memoria principal dividida en <b>ROM/Flash</b> (la BIOS, una parte chica) y <b>RAM</b> (la mayor parte).</p>
+    </article>
+
+    <article class="msec" id="m3-hv"><h2>2. Arquitectura Harvard</h2>
+      <ul><li><b>Dos memorias separadas:</b> una de <b>instrucciones</b> (programa, suele ser ROM) y otra de <b>datos</b> (RAM).</li><li><b>Dos juegos de buses:</b> dos buses de datos y dos de direcciones.</li><li>Puede leer <b>una instrucción y un dato al mismo tiempo</b>: no hay cuello de botella.</li><li>Instrucciones y datos pueden tener <b>distinto tamaño</b>, y las memorias, distinta tecnología.</li><li>Se usa en <b>microcontroladores</b> (PIC, Arduino/AVR, 8051), <b>DSP</b> y en la <b>caché L1</b> (L1I + L1D).</li></ul>
+      <div class="ok"><b>Oficial:</b> "Tiene una memoria de instrucciones y una de datos separadas" · "La caché de nivel 1 tiene una arquitectura de este tipo" · "Tiene dos buses de datos y dos buses de direcciones".</div>
+      <table class="mt"><thead><tr><th></th><th>Von Neumann</th><th>Harvard</th></tr></thead><tbody>
+        <tr><td>Memorias</td><td>1 sola (instrucciones + datos)</td><td>2 separadas</td></tr>
+        <tr><td>Buses</td><td>1 juego</td><td>2 juegos (dobles)</td></tr>
+        <tr><td>¿Instrucción y dato a la vez?</td><td>No (cuello de botella)</td><td>Sí</td></tr>
+        <tr><td>Dónde se usa</td><td>PC comunes</td><td>Microcontroladores, DSP, caché L1</td></tr>
+      </tbody></table>
+      <p class="tip"><b>Truco del plano:</b> contá las cajas de memoria. 1 → Von Neumann. 2 ("de programa/instrucciones" y "de datos") → Harvard.</p>
+    </article>
+
+    <article class="msec" id="m3-bus"><h2>3. Buses</h2>
+      <table class="mt"><thead><tr><th>Bus</th><th>Qué lleva</th><th>Sentido</th></tr></thead><tbody>
+        <tr><td><b>Direcciones</b></td><td>La dirección (a qué posición de memoria o puerto ir)</td><td><b>Unidireccional</b>: sale de la CPU hacia memoria y E/S</td></tr>
+        <tr><td><b>Datos</b></td><td><b>Datos y también instrucciones</b></td><td><b>Bidireccional</b> (lectura y escritura)</td></tr>
+        <tr><td><b>Control</b></td><td>Órdenes: READ (RD), WRITE (WR), interrupciones, reloj (CLK), reset, enable</td><td>Bidireccional como bus; cada línea por separado es unidireccional</td></tr>
+      </tbody></table>
+      <ul><li>Lectura (MR): de la memoria hacia los registros de la CPU. Escritura (MW): de la CPU hacia la memoria.</li><li>Las líneas del bus de direcciones definen <b>cuántas posiciones</b> se pueden direccionar; las del bus de datos, <b>cuántos bits</b> viajan juntos (la palabra).</li><li><b>Serie:</b> 1 bit por vez (USB, SATA, PCIe). <b>Paralelo:</b> varios bits a la vez (PCI, IDE).</li><li><b>Síncrono:</b> gobernado por un reloj. <b>Asíncrono:</b> usa señales de ida y vuelta (handshaking).</li></ul>
+      <div class="trap"><b>Trampa:</b> el bus de datos lleva datos <b>y</b> instrucciones (un error real fue marcar solo "instrucciones"). La figura 3.3 del apunte dibuja el bus de direcciones con doble flecha, pero la respuesta es <b>unidireccional</b>.</div>
+    </article>
+
+    <article class="msec" id="m3-pot"><h2>4. Potencial de direccionamiento <span class="hot">31 veces</span></h2>
+      <p>Con <b>n</b> líneas (pines) en el bus de direcciones se pueden direccionar <b>2<sup>n</sup></b> posiciones (bytes, porque se direcciona a nivel de byte).</p>
+      <ul><li>2<sup>10</sup> = 1 K · 2<sup>20</sup> = 1 M · 2<sup>30</sup> = 1 G · 2<sup>40</sup> = 1 T</li><li>8086: 20 líneas → 2<sup>20</sup> = <b>1 MB</b>.</li><li>n = 45 → 2<sup>45</sup> = 2<sup>40</sup>·2<sup>5</sup> = <b>32 TB</b> <span class="k-ok">oficial</span></li><li><b>Un pin más → la capacidad se duplica</b> <span class="k-ok">oficial</span>, porque 2<sup>n+1</sup> = 2·2<sup>n</sup>.</li></ul>
+      <div class="trap"><b>Trampa:</b> 2n (multiplicar), 2<sup>n</sup>−1 (es la última dirección, no la cantidad) y 2<sup>n−1</sup> están mal. Ojo con "32,7 TB": es un redondeo falso.</div>
+    </article>
+
+    <article class="msec" id="m3-cpu"><h2>5. CPU y registros</h2>
+      <table class="mt"><thead><tr><th>Parte</th><th>Qué hace</th></tr></thead><tbody>
+        <tr><td><b>Unidad de Control (UC/UTC)</b></td><td>El "jefe": busca la instrucción, la <b>decodifica</b> y <b>genera las señales de control</b> sincronizadas con el reloj. Coordina todo.</td></tr>
+        <tr><td><b>ALU (UAL)</b></td><td>Hace operaciones aritméticas (suma, resta…) y lógicas (AND, OR, XOR, NOT). Es <b>pasiva</b>: solo hace lo que ordena la UC.</td></tr>
+        <tr><td><b>Registros</b></td><td>Memoria chiquita y rapidísima dentro de la CPU. El nivel <b>más alto</b> de la jerarquía de memorias.</td></tr>
+      </tbody></table>
+      <p><b>Partes de la UC:</b> secuenciador (genera las microórdenes), contador de programa, registro de instrucción, decodificador, reloj y flags.</p>
+      <table class="mt"><thead><tr><th>Registro</th><th>Guarda</th></tr></thead><tbody>
+        <tr><td><b>PC / IP</b></td><td>La dirección de la <b>próxima</b> instrucción (en la UC). Tiene tantos bits como el bus de direcciones.</td></tr>
+        <tr><td><b>IR / RI</b></td><td>La instrucción que <b>se está ejecutando</b>, para decodificarla.</td></tr>
+        <tr><td><b>MAR</b></td><td>La <b>dirección</b> de memoria a la que se va a acceder. Conectado al bus de direcciones.</td></tr>
+        <tr><td><b>MDR</b></td><td>El <b>dato</b> leído de memoria o que se va a escribir <span class="k-ok">oficial</span>. Conectado al bus de datos.</td></tr>
+        <tr><td><b>ACC</b></td><td>El resultado de la ALU (acumulador).</td></tr>
+        <tr><td><b>Flags / PSW</b></td><td>Cómo salió la operación: cero, signo, acarreo, desborde…</td></tr>
+      </tbody></table>
+      <p>Clasificación: <b>visibles por el usuario</b> (uso general AX, BX…, direcciones, flags) y <b>de control y estado</b> (PC, IR, MAR, MDR).</p>
+    </article>
+
+    <article class="msec" id="m3-ciclo"><h2>6. Ciclo de instrucción</h2>
+      <p><b>Como lo dio el profe (5 pasos):</b></p>
+      <ol>
+        <li><b>Búsqueda de la instrucción:</b> PC/IP → MAR → memoria → MDR.</li>
+        <li><b>Decodificación:</b> MDR → IR → la UC interpreta el código de operación.</li>
+        <li><b>Búsqueda de operandos:</b> la UC → MAR → memoria → MDR.</li>
+        <li><b>Ejecución:</b> la ALU hace la operación.</li>
+        <li><b>Resultado:</b> se guarda en el acumulador y se actualizan los <b>flags (PSW)</b>.</li>
+      </ol>
+      <pre class="code">Búsqueda en RTL (teórico):
+MAR ← PC
+MDR ← M[MAR]
+IR  ← MDR
+PC  ← PC + longitud de la instrucción</pre>
+      <p>Clase de repaso, en 5 etapas: <b>IF</b> (buscar) · <b>ID</b> (decodificar) · <b>EX</b> (ejecutar / calcular dirección) · <b>MEM</b> (leer/escribir memoria) · <b>WB</b> (escribir resultado en registro). Conceptualmente son 2 fases: <b>Fetch</b> (búsqueda) y <b>Execute</b> (ejecución).</p>
+      <div class="ok"><b>Oficial:</b> "La segunda fase es la decodificación: la UC interpreta, a partir de los bits del registro de instrucción, qué acciones realizar" → Verdadero.</div>
+      <p><b>Pipeline (segmentación):</b> varias instrucciones se ejecutan a la vez, cada una en una etapa distinta.</p>
+    </article>
+
+    <article class="msec" id="m3-uc"><h2>7. Unidad de Control: cableada vs microprogramada</h2>
+      <table class="mt"><thead><tr><th></th><th>Cableada</th><th>Microprogramada</th></tr></thead><tbody>
+        <tr><td>Cómo genera las señales</td><td>Con circuitos lógicos (compuertas, flip-flops)</td><td>Con <b>microinstrucciones</b> guardadas en una <b>memoria de control (ROM)</b></td></tr>
+        <tr><td>Velocidad</td><td><b>Más rápida</b></td><td>Más lenta</td></tr>
+        <tr><td>Flexibilidad</td><td>Difícil de modificar (hay que rediseñar)</td><td><b>Flexible</b>: se cambia el microprograma</td></tr>
+        <tr><td>Se usa en</td><td><b>RISC</b></td><td><b>CISC</b> (x86)</td></tr>
+      </tbody></table>
+      <p><b>Microcódigo</b> = conjunto de microinstrucciones en ROM. Lo propuso M. V. Wilkes en 1951.</p>
+    </article>
+
+    <article class="msec" id="m3-cisc"><h2>8. CISC vs RISC</h2>
+      <table class="mt"><thead><tr><th></th><th>CISC</th><th>RISC</th></tr></thead><tbody>
+        <tr><td>Instrucciones</td><td>Muchas y complejas</td><td>Pocas y simples</td></tr>
+        <tr><td>Longitud</td><td><b>Variable</b></td><td><b>Fija</b></td></tr>
+        <tr><td>Modos de direccionamiento</td><td>Muchos</td><td>Pocos</td></tr>
+        <tr><td>Registros</td><td>Pocos</td><td>Muchos</td></tr>
+        <tr><td>Operandos</td><td>Registro-memoria</td><td>Registro-registro (load-store)</td></tr>
+        <tr><td>Unidad de control</td><td><b>Microprogramada</b></td><td><b>Cableada</b></td></tr>
+        <tr><td>Pipeline</td><td>Más difícil</td><td>Más fácil (casi 1 instrucción por ciclo)</td></tr>
+        <tr><td>Ejemplos</td><td>Intel x86, AMD</td><td>ARM, MIPS, RISC-V, SPARC</td></tr>
+      </tbody></table>
+      <div class="ok"><b>Oficial:</b> característica de CISC → <b>microprogramación</b>. Característica de RISC → <b>instrucciones simples y rápidas</b>.</div>
+    </article>
+
+    <article class="msec" id="m3-isa"><h2>9. Instrucciones y set de instrucciones (ISA)</h2>
+      <ul><li><b>ISA:</b> el conjunto de instrucciones que entiende el procesador. Es la interfaz entre el software y el hardware.</li><li><b>Instrucción</b> = <b>código de operación</b> (qué hacer) + <b>operandos</b> (con qué datos). Ejemplo: <code>ADD AX, BX</code> → AX ← AX + BX.</li><li><b>Cantidad de direcciones (operandos):</b> 3 (MIPS, ARM) · 2 (x86) · 1 (acumulador: Z80, 6800) · 0 (pila: JVM).</li><li><b>Dónde están los operandos:</b> registro-registro / load-store (RISC) · registro-memoria (x86) · memoria-memoria (antigua, VAX).</li><li><b>Longitud:</b> fija (RISC) o variable (x86: de 1 a 15 bytes).</li><li><b>Endianness:</b> x86 es <b>little endian</b>: el byte menos significativo va en la dirección más baja (4A3B2C1D se guarda 1D 2C 3B 4A).</li></ul>
+    </article>
+
+    <article class="msec" id="m3-int"><h2>10. Interrupciones</h2>
+      <p>Señal (<b>IRQ</b>) con la que un dispositivo pide la atención de la CPU (teclado, disco, temporizador, red).</p>
+      <ol><li>La CPU <b>termina la instrucción en curso</b> (no la corta a la mitad).</li><li><b>Guarda el contexto</b>: la dirección de la próxima instrucción (IP) y los flags, en la pila.</li><li>Busca la rutina en la <b>tabla de vectores de interrupción</b> y salta a la <b>ISR</b> (rutina de servicio).</li><li>La ISR termina con <b>IRET</b>, que restaura el contexto.</li><li>El programa sigue exactamente donde estaba.</li></ol>
+    </article>
+
+    <article class="msec" id="m3-es"><h2>11. Subsistema de E/S</h2>
+      <p>Adapta la CPU (rápida) a los periféricos (lentos y distintos). Se le dice interfaz, módulo, adaptador o controlador de E/S.</p>
+      <p><b>Funciones:</b> almacenamiento temporal (buffers) · direccionamiento (elegir el dispositivo) · control de las transferencias · sincronización (las transferencias son asíncronas).</p>
+      <p><b>Puertos:</b> de <b>datos</b> · de <b>estado</b> (flags del dispositivo) · de <b>comandos</b> (órdenes). Pueden ser de lectura, de escritura o de ambas. También se clasifican en serie y paralelos.</p>
+      <p><b>E/S mapeada en memoria</b> (se usa MOV) vs <b>E/S aislada</b> (se usa IN para leer un puerto y OUT para escribir).</p>
+    </article>
+  </div>
+
+  <!-- ================= U4 ================= -->
+  <div class="munit" data-unit="U4" hidden>
+    <nav class="mtoc" aria-label="Temas de la Unidad 4">
+      <a href="#m4-reg">Registros</a><a href="#m4-flags">Flags</a><a href="#m4-tipos">Tipos de instrucción</a><a href="#m4-md">Modos de direccionamiento</a><a href="#m4-ins">Instrucciones clave</a><a href="#m4-tabla">Tabla del parcial</a><a href="#m4-prog">Leer un programa</a>
+    </nav>
+
+    <article class="msec" id="m4-reg"><h2>1. Registros del 8086 (todos de 16 bits)</h2>
+      <table class="mt"><thead><tr><th>Registro</th><th>Nombre</th><th>Para qué</th></tr></thead><tbody>
+        <tr><td><b>AX</b> (AH | AL)</td><td>Acumulador</td><td>Aritmética y E/S; guarda resultados</td></tr>
+        <tr><td><b>BX</b> (BH | BL)</td><td>Base</td><td>Guarda direcciones de memoria; se puede usar entre [ ]</td></tr>
+        <tr><td><b>CX</b> (CH | CL)</td><td>Contador</td><td>Cuenta las vueltas de los bucles (LOOP)</td></tr>
+        <tr><td><b>DX</b> (DH | DL)</td><td>Datos</td><td>E/S, multiplicación y división</td></tr>
+        <tr><td><b>SI / DI</b></td><td>Índice fuente / destino</td><td>Recorrer memoria (arreglos, cadenas)</td></tr>
+        <tr><td><b>SP</b></td><td>Puntero de pila</td><td>Apunta al <b>tope de la pila</b> (LIFO)</td></tr>
+        <tr><td><b>BP</b></td><td>Puntero base</td><td>Acceder a datos dentro de la pila</td></tr>
+        <tr><td><b>IP</b></td><td>Puntero de instrucción</td><td>Dirección de la próxima instrucción (el PC)</td></tr>
+        <tr><td><b>CS, DS, SS, ES</b></td><td>Segmentos</td><td>Inicio de los segmentos de código, datos, pila y extra (cada uno de <b>64 KB</b>)</td></tr>
+      </tbody></table>
+      <p><b>Parte alta y baja:</b> AX = 1FB4 → AH = 1F, AL = B4. Solo AX, BX, CX y DX se pueden partir así.</p>
+      <p>Asociaciones: IP va con CS · SP y BP con SS · SI, DI y BX con DS · DI con ES.</p>
+    </article>
+
+    <article class="msec" id="m4-flags"><h2>2. Flags (registro de estado)</h2>
+      <table class="mt"><thead><tr><th>Flag</th><th>Se pone en 1 cuando…</th></tr></thead><tbody>
+        <tr><td><b>ZF</b> cero</td><td>El resultado es <b>0</b></td></tr>
+        <tr><td><b>SF</b> signo</td><td>El resultado es <b>negativo</b> (bit más alto = 1)</td></tr>
+        <tr><td><b>CF</b> acarreo</td><td>Hay acarreo fuera del registro (operaciones <b>sin signo</b>); también recibe el último bit en desplazamientos</td></tr>
+        <tr><td><b>OF</b> desbordamiento</td><td>Hay overflow en operaciones <b>con signo</b></td></tr>
+        <tr><td><b>PF</b> paridad</td><td>El resultado tiene paridad par</td></tr>
+        <tr><td><b>AF</b> acarreo auxiliar</td><td>Hay acarreo del bit 3 al 4</td></tr>
+        <tr><td>IF / DF / TF</td><td>Interrupción habilitada / dirección para cadenas / paso a paso (DEBUG)</td></tr>
+      </tbody></table>
+      <p><b>CMP AX, BX</b> resta sin guardar el resultado y solo prende los flags: AX = BX → ZF = 1 · AX &gt; BX → ZF = 0, SF = 0 · AX &lt; BX → SF = 1.</p>
+    </article>
+
+    <article class="msec" id="m4-tipos"><h2>3. Tipos de instrucción <span class="hot">31 veces</span></h2>
+      <table class="mt"><thead><tr><th>Tipo (como responde la cátedra)</th><th>Instrucciones</th></tr></thead><tbody>
+        <tr><td><b>de Transferencia</b></td><td>MOV, PUSH, POP, XCHG, LEA</td></tr>
+        <tr><td><b>Aritmética</b></td><td>ADD, SUB, <b>INC</b>, <b>DEC</b>, MUL, DIV, CMP, NEG</td></tr>
+        <tr><td><b>Lógica</b></td><td>AND, OR, <b>XOR</b>, NOT</td></tr>
+        <tr><td><b>de desplazamiento</b></td><td><b>SHR</b>, SHL, ROL, ROR</td></tr>
+        <tr><td><b>de Bit</b></td><td><b>STI</b>, CLI, STC, CLC (prenden o apagan un flag)</td></tr>
+        <tr><td><b>de E/S</b></td><td><b>IN</b>, <b>OUT</b></td></tr>
+        <tr><td><b>de Control</b></td><td><b>HLT</b>, NOP (y los saltos, CALL/RET e INT rompen la secuencia)</td></tr>
+      </tbody></table>
+      <div class="ok"><b>Oficial:</b> SHR → de desplazamiento · XOR → Lógica · STI → de Bit · MOV → de Transferencia · ADD → Aritmética · OUT → de E/S · DEC → Aritmética · HLT → de Control.</div>
+      <div class="trap"><b>Trampas:</b> INC y DEC son aritméticas · SHR no es "lógica" sino "de desplazamiento" · STI es "de bit".</div>
+    </article>
+
+    <article class="msec" id="m4-md"><h2>4. Modos de direccionamiento <span class="hot">18 veces</span></h2>
+      <table class="mt"><thead><tr><th>Modo</th><th>Dónde está el dato</th><th>Ejemplo oficial</th></tr></thead><tbody>
+        <tr><td><b>Inmediato</b></td><td>En la misma instrucción (un número suelto, sin corchetes)</td><td><code>MOV SI, 2000</code> · <code>MOV AX, 1FB4</code></td></tr>
+        <tr><td><b>Registro</b></td><td>En un registro</td><td><code>MOV AX, BX</code> · <code>ADD AX, BX</code></td></tr>
+        <tr><td><b>Directo (memoria)</b></td><td>En memoria; la instrucción trae la dirección: [número]</td><td><code>MOV AX, [2A5F]</code></td></tr>
+        <tr><td><b>Indirecto (por registro / memoria)</b></td><td>En memoria; un registro tiene la dirección: [registro]</td><td><code>ADD [SI], AL</code> · <code>MOV AX, [BX]</code></td></tr>
+        <tr><td><b>Relativo</b></td><td>Saltos: destino = IP + desplazamiento (−128 a +127)</td><td><code>JNZ 120</code></td></tr>
+        <tr><td><b>Implícito / inherente</b></td><td>No tiene operandos; está implícito</td><td><code>CLI</code> · <code>CLC</code> · <code>HLT</code></td></tr>
+      </tbody></table>
+      <pre class="code">¿Sin operandos?                 → IMPLÍCITO
+¿Es un salto (Jxx)?             → RELATIVO
+¿Hay [ ] con un NÚMERO?         → DIRECTO
+¿Hay [ ] con un REGISTRO?       → INDIRECTO
+¿Número suelto sin [ ]?         → INMEDIATO
+¿Solo registros?                → REGISTRO</pre>
+      <div class="trap"><b>Instrucciones inválidas:</b> entre [ ] solo pueden ir <b>BX, BP, SI, DI</b> → <code>MOV AH,[AL]</code> y <code>ADD AL,[CX+02]</code> son inválidas. Tampoco se puede memoria a memoria: <code>MOV [x],[y]</code>.</div>
+    </article>
+
+    <article class="msec" id="m4-ins"><h2>5. Instrucciones clave</h2>
+      <table class="mt"><thead><tr><th>Instrucción</th><th>Qué hace</th></tr></thead><tbody>
+        <tr><td><code>MOV destino, origen</code></td><td>Copia origen en destino (se lee de derecha a izquierda)</td></tr>
+        <tr><td><code>ADD a, b</code> / <code>SUB a, b</code></td><td>a ← a + b / a ← a − b (cambian los flags)</td></tr>
+        <tr><td><code>INC x</code> / <code>DEC x</code></td><td>Suma 1 / resta 1</td></tr>
+        <tr><td><code>CMP a, b</code></td><td>Compara (resta sin guardar) y solo prende los flags</td></tr>
+        <tr><td><code>XOR AL, AL</code></td><td>Pone AL en 0 (truco típico para inicializar)</td></tr>
+        <tr><td><code>JMP etiqueta</code></td><td>Salto incondicional</td></tr>
+        <tr><td><code>JE / JZ</code></td><td>Salta si ZF = 1 (igual / dio cero)</td></tr>
+        <tr><td><code>JNE / JNZ</code></td><td>Salta si ZF = 0 (distinto / no dio cero)</td></tr>
+        <tr><td><code>JG / JL</code> (con signo) · <code>JA / JB</code> (sin signo)</td><td>Mayor / menor</td></tr>
+        <tr><td><code>LOOP etiqueta</code></td><td>CX ← CX − 1; si CX ≠ 0, salta</td></tr>
+        <tr><td><code>CALL</code> / <code>RET</code></td><td>Guarda IP en la pila y salta a la subrutina / vuelve</td></tr>
+        <tr><td><code>PUSH</code> / <code>POP</code></td><td>Mete / saca un valor del tope de la pila (cambia SP)</td></tr>
+        <tr><td><code>IN</code> / <code>OUT</code></td><td>Lee / escribe un puerto de E/S</td></tr>
+        <tr><td><code>INT 3</code></td><td>Punto de parada del DEBUG (código CC); termina el programa en los ejemplos</td></tr>
+      </tbody></table>
+      <p>En DEBUG <b>todos los números son hexadecimales</b>.</p>
+    </article>
+
+    <article class="msec" id="m4-tabla"><h2>6. La tabla del parcial: dirección · instrucción · código en memoria <span class="hot">10 veces</span></h2>
+      <pre class="code">N° | Dirección | Instrucción   | Código en memoria
+1  | 1371:0100 | MOV AX,1FB4   | B8 B41F
+2  | 1371:0103 | MOV BX,[E34B] | 8B1E 4BE3
+3  | 1371:0107 | ADD AX,BX     | 01D8
+4  | 1371:0109 | MOV AX,[BX]   | 8B07
+5  | 1371:010B | INT 3         | CC</pre>
+      <ul>
+        <li><b>Bytes que ocupa</b> = dirección siguiente − dirección actual (0103 − 0100 = 3 bytes = 6 dígitos hex).</li>
+        <li><b>Little endian:</b> los números aparecen <b>con los bytes al revés</b>. B8 <b>B41F</b> → el dato es <b>1FB4</b>. 8B1E <b>4BE3</b> → la dirección es <b>E34B</b>.</li>
+        <li><b>Código de operación</b> = los primeros bytes (B8, 8B1E). Si la instrucción no tiene dato ni dirección, todo es código de operación: ADD AX,BX → <b>01D8</b>.</li>
+        <li><b>Dato vs dirección:</b> en el modo inmediato lo que sigue es el <b>dato</b>; en el directo es la <b>dirección</b> donde está el dato.</li>
+      </ul>
+      <div class="ok"><b>Oficial:</b> instr. 1 inmediato y el dato es 1FB4 · instr. 2 directo y el dato está en la dirección E34B · instr. 3 por registro y el código de operación es 01D8 · instr. 4 indirecto por registro · instr. 5 no tiene dato u operando.</div>
+    </article>
+
+    <article class="msec" id="m4-prog"><h2>7. Cómo leer un programa y decir qué hace</h2>
+      <ol><li>Hacé una tabla con los registros (AX, BX, CX…) y anotá su valor después de cada línea.</li><li>Leé cada instrucción de <b>derecha a izquierda</b>: origen → destino.</li><li>En los saltos, fijate el flag: <b>JNZ vuelve a saltar mientras no dé cero</b>.</li><li>Identificá los roles: el que se decrementa hasta 0 es el <b>contador</b> (CX); el que se incrementa y va entre [ ] es el <b>puntero</b> (BX, SI); el que se va sumando es el <b>acumulador</b> (AL/AX).</li><li>Mirá adónde va el resultado final (por ejemplo, un MOV a memoria).</li></ol>
+      <pre class="code">MOV CX,05        ; CX = 5 → cantidad de elementos (contador)
+MOV BX,0200H     ; BX = dirección del arreglo (puntero)
+XOR AL,AL        ; AL = 0 → va a guardar la suma
+ADD_LP:
+ADD AL,[BX]      ; suma el byte apuntado por BX
+INC BX           ; avanza al siguiente byte
+DEC CX           ; una vuelta menos
+JNZ ADD_LP       ; si CX no llegó a 0, repite
+MOV [0205],AL    ; guarda el resultado en la dirección 0205</pre>
+      <p class="tip"><b>Qué hace:</b> suma los 5 bytes que están desde la dirección 0200H y guarda la suma en 0205H. Patrón típico: <b>contador + puntero + acumulador + salto condicional</b> = recorrer un arreglo.</p>
+    </article>
+  </div>
+
+  <!-- ================= U5 ================= -->
+  <div class="munit" data-unit="U5" hidden>
+    <nav class="mtoc" aria-label="Temas de la Unidad 5">
+      <a href="#m5-clas">Clasificación</a><a href="#m5-mp">Memoria principal</a><a href="#m5-acc">Acceso y señales</a><a href="#m5-sd">SRAM / DRAM</a><a href="#m5-rom">ROM y familia</a><a href="#m5-flash">Flash NOR / NAND</a><a href="#m5-cache">Caché</a><a href="#m5-jer">Jerarquía</a><a href="#m5-disco">Disco, SSD, ópticos</a><a href="#m5-disp">Dispositivos</a>
+    </nav>
+
+    <article class="msec" id="m5-clas"><h2>1. Clasificación de las memorias</h2>
+      <table class="mt"><thead><tr><th>Según…</th><th>Tipos</th></tr></thead><tbody>
+        <tr><td>Función</td><td>Interna: registros, caché · Principal: RAM · Secundaria: HD, SSD · Terciaria: cintas · Buffer</td></tr>
+        <tr><td>Volatilidad</td><td><b>Volátiles</b> (pierden todo sin energía): registros, caché, RAM · <b>No volátiles</b>: ROM, PROM, EPROM, EEPROM, Flash, HD, SSD</td></tr>
+        <tr><td>Acceso</td><td><b>Aleatorio</b>: RAM, ROM · <b>Directo</b>: HD, SSD · <b>Secuencial</b>: cintas</td></tr>
+        <tr><td>Lectura / escritura</td><td>Solo lectura: ROM · Lectura y escritura: RAM, HD, SSD, Flash</td></tr>
+      </tbody></table>
+    </article>
+
+    <article class="msec" id="m5-mp"><h2>2. Memoria principal</h2>
+      <div class="ok"><b>Oficial (Von Neumann):</b> almacena instrucciones y datos · se la identifica con la <b>DRAM</b> · en parte se la identifica con la <b>ROM-BIOS</b> · el elemento más chico direccionable es el <b>byte</b>.</div>
+      <ul><li>Memoria principal = <b>RAM + ROM</b> (la ROM-BIOS tiene el programa de arranque).</li><li>Los datos <b>siempre</b> están en la memoria principal; en la caché están <b>a veces</b> (copias).</li><li><b>GB vs GiB:</b> GB = 10<sup>9</sup> bytes (lo usan los fabricantes de discos) · GiB = 2<sup>30</sup> bytes. Un disco de 250 GB son ≈ 232,83 GiB.</li></ul>
+    </article>
+
+    <article class="msec" id="m5-acc"><h2>3. Cómo se accede a la memoria</h2>
+      <ol><li>La UC decide la operación.</li><li>El <b>bus de direcciones</b> lleva la posición.</li><li>El <b>decodificador de direcciones</b> habilita la fila de la matriz.</li><li>El <b>bus de control</b> indica lectura (RD) o escritura (WR).</li><li>El <b>bus de datos</b> transfiere la información.</li></ol>
+      <p><b>Señales del chip:</b> <b>CS</b> (selección de chip) · <b>OE</b> (habilitación de lectura / salida) · <b>WE</b> (habilitación de escritura). El chip es una <b>matriz de celdas</b>: filas = líneas de palabra, columnas = líneas de bit.</p>
+      <p><b>Tiempo de acceso:</b> desde que se direcciona una celda hasta que el dato está disponible. El <b>controlador de memoria</b> coordina las lecturas y escrituras (hoy suele estar dentro del procesador).</p>
+    </article>
+
+    <article class="msec" id="m5-sd"><h2>4. SRAM vs DRAM</h2>
+      <table class="mt"><thead><tr><th></th><th>SRAM (estática)</th><th>DRAM (dinámica)</th></tr></thead><tbody>
+        <tr><td>Celda</td><td>Flip-flop, <b>6 transistores</b> → "con transistores"</td><td><b>1 transistor + 1 capacitor</b> → "con capacitores o condensadores"</td></tr>
+        <tr><td>Refresco</td><td>No necesita</td><td><b>Sí</b> (el capacitor se descarga; también hay precarga después de leer)</td></tr>
+        <tr><td>Velocidad</td><td><b>Más rápida</b></td><td>Más lenta</td></tr>
+        <tr><td>Costo</td><td>Más cara</td><td><b>Más barata</b></td></tr>
+        <tr><td>Densidad</td><td>Menor</td><td><b>Mayor</b> (más capacidad por superficie)</td></tr>
+        <tr><td>Uso</td><td><b>Caché</b></td><td><b>Memoria principal</b></td></tr>
+      </tbody></table>
+      <p>Las dos son <b>volátiles</b>. <b>SDRAM:</b> DRAM síncrona, va con el reloj. <b>DDR</b> (Double Data Rate): transfiere 2 veces por ciclo (flanco de subida y de bajada) y duplica el ancho de banda.</p>
+      <div class="trap"><b>Trampa:</b> te describen la DRAM pero le ponen el nombre "SRAM" → Falso. "La caché es una memoria DRAM…" → Falso (es SRAM).</div>
+    </article>
+
+    <article class="msec" id="m5-rom"><h2>5. ROM, PROM, EPROM, EEPROM <span class="hot">29 veces</span></h2>
+      <table class="mt"><thead><tr><th>Memoria</th><th>¿Programable?</th><th>¿Borrable? ¿Cómo?</th></tr></thead><tbody>
+        <tr><td><b>ROM</b></td><td><b>No</b> (viene de fábrica, por máscara)</td><td>No</td></tr>
+        <tr><td><b>PROM</b></td><td><b>Una sola vez</b> (se queman fusibles)</td><td><b>No</b></td></tr>
+        <tr><td><b>EPROM</b></td><td>Sí</td><td>Con <b>luz ultravioleta</b>, el chip completo</td></tr>
+        <tr><td><b>EEPROM</b></td><td>Sí</td><td><b>Eléctricamente, byte a byte</b></td></tr>
+        <tr><td><b>Flash</b></td><td>Sí</td><td>Eléctricamente, <b>por bloque</b></td></tr>
+      </tbody></table>
+      <div class="ok"><b>Oficial:</b> "las ROM no se pueden programar" · "las PROM se pueden programar una sola vez".</div>
+      <div class="trap"><b>Trampa (11 veces):</b> "Las PROM son Programmable RAM…" → <b>Falso</b>: PROM es Programmable <b>ROM</b>.</div>
+    </article>
+
+    <article class="msec" id="m5-flash"><h2>6. Flash NOR vs NAND</h2>
+      <table class="mt"><thead><tr><th></th><th>NOR</th><th>NAND</th></tr></thead><tbody>
+        <tr><td>Acceso</td><td>A un <b>byte suelto</b>, lectura muy rápida</td><td><b>Por bloque</b></td></tr>
+        <tr><td>Capacidad</td><td>Menor</td><td><b>Mucho mayor</b> (más densidad)</td></tr>
+        <tr><td>Uso</td><td><b>BIOS</b></td><td><b>SSD</b>, pendrives, celulares</td></tr>
+      </tbody></table>
+    </article>
+
+    <article class="msec" id="m5-cache"><h2>7. Memoria caché</h2>
+      <ul><li>Memoria <b>SRAM</b> chica y rápida, <b>entre la CPU y la DRAM</b>. Guarda copias de lo que se está usando.</li><li><b>Localidad temporal:</b> lo usado recién se vuelve a usar (bucles). <b>Localidad espacial:</b> se usan direcciones vecinas (instrucciones seguidas, arreglos).</li><li><b>Niveles:</b> <b>L1</b> es la primera donde se busca, la más rápida y chica; está dividida en <b>L1I</b> (instrucciones) y <b>L1D</b> (datos), o sea es <b>Harvard</b>. <b>L2</b> es más grande y más lenta (cientos de KB a pocos MB). <b>L3</b> es más grande y la comparten los núcleos.</li><li>Tiene un <b>directorio</b> (guarda partes de direcciones para comparar con las que pide la CPU) y los datos. La unidad de transferencia es el <b>bloque o línea</b> (por ejemplo, 64 B).</li><li>Si el dato está, es un acierto (hit); si no, un fallo (miss) y se busca en el nivel siguiente.</li></ul>
+      <div class="ok"><b>Oficial:</b> los datos <b>a veces</b> están en L2 y <b>siempre</b> en la memoria principal · L1 es donde se busca primero · "L1 es más lenta que L2" → Falso · la más grande entre L1, L2 y MP es la <b>MP</b> · la caché es SRAM.</div>
+    </article>
+
+    <article class="msec" id="m5-jer"><h2>8. Jerarquía de memorias</h2>
+      <pre class="code">      ▲ más rápida y más cara por bit
+  1   Registros
+  2   Caché (L1 / L2 / L3) – SRAM
+  3   Memoria principal – DRAM
+  4   Disco (SSD / disco duro)
+  5   Cintas (respaldo)
+      ▼ más capacidad y más barata</pre>
+      <div class="ok"><b>Oficial:</b> Caché = nivel <b>2</b> · Disco duro = nivel <b>4</b> (pirámide de 5) · en el orden por tiempo de acceso de 1 a 6 (registros, caché, DRAM, SSD, disco duro, cintas), DRAM = <b>3</b> · en el nivel superior están los registros → Verdadero.</div>
+    </article>
+
+    <article class="msec" id="m5-disco"><h2>9. Disco rígido, SSD, ópticos y cintas</h2>
+      <p><b>Tiempo de acceso del disco</b> = búsqueda + latencia rotacional + transferencia.</p>
+      <div class="ok"><b>Oficial:</b> lo que tarda la cabeza en posicionarse sobre la pista → <b>tiempo de búsqueda</b> · lo que tarda el sector en llegar a la cabeza → <b>retardo rotacional (latencia)</b>.</div>
+      <p><b>Capacidad</b> = cilindros × caras (cabezas) × sectores por pista × bytes por sector (geometría CHS). <b>Sector:</b> unidad física (512 B o 4 KB). <b>Cluster:</b> unidad que maneja el sistema operativo.</p>
+      <p><b>SSD:</b> Flash NAND, sin partes móviles, acceso por bloque, con controlador e interfaces SATA o NVMe.</p>
+      <p><b>Ópticos</b> (CD, DVD, Blu-ray): un láser lee hoyos y mesetas sobre una pista en <b>espiral</b>. Se graba con un láser de más potencia y se lee con <b>otro láser de menor potencia</b>.</p>
+      <p><b>Cintas:</b> acceso <b>secuencial</b>, se usan para respaldo.</p>
+    </article>
+
+    <article class="msec" id="m5-disp"><h2>10. Dispositivos de E/S</h2>
+      <ul><li><b>Impresora láser:</b> el <b>fusor</b> funde el tóner en la hoja.</li><li><b>Matriz de puntos:</b> golpea con <b>agujas</b> una cinta contra el papel.</li><li><b>Puntos por pulgada (ppp/dpi):</b> la <b>resolución</b> de la impresora.</li><li>Centronics, serial, paralelo, USB, ethernet, wireless → <b>interfaces</b> de la impresora.</li><li>Entrada: teclado, mouse, escáner · Salida: monitor, impresora · E/S: discos, pendrive.</li></ul>
+    </article>
+  </div>
+</section>
 
 <!-- ERRORS -->
 <section class="view" id="v-errors" aria-label="Mis errores"><div class="res" id="errs"></div></section>
@@ -517,6 +897,14 @@ document.addEventListener('keydown',e=>{
   if(/^[1-9]$/.test(e.key)){const i=+e.key-1;if(Q&&!Q.done&&i<Q.list[Q.i].opciones.length){toggle(i);e.preventDefault()}}
   if(e.key==='Enter'){ if(document.activeElement?.classList.contains('opt')||document.activeElement===document.body||document.activeElement?.id==='next'||document.activeElement?.id==='check'){e.preventDefault(); Q.done?next():check();} }
 });
+
+document.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.mseg button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.munit').forEach(u=>u.hidden=u.dataset.unit!==b.dataset.u);
+  store.set('aco2_mach',b.dataset.u);
+});
+(function(){const u=store.get('aco2_mach','U3');const b=document.querySelector('.mseg button[data-u="'+u+'"]');if(b)b.click();})();
+document.querySelectorAll('.mtoc a').forEach(a=>a.onclick=e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 renderHome();
 </script>
 </body>
