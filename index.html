@@ -895,6 +895,7 @@ function renderErrors(){
 }
 
 function show(v){
+  if(updPending&&v!=='quiz'&&v!=='res'){location.reload();return}
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
   document.querySelectorAll('.nav button').forEach(b=>{ if(b.dataset.go===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   if(v==='home') renderHome(); if(v==='errors') renderErrors();
@@ -922,6 +923,21 @@ document.querySelectorAll('.mseg button').forEach(b=>b.onclick=()=>{
 (function(){const u=store.get('aco2_mach','U3');const b=document.querySelector('.mseg button[data-u="'+u+'"]');if(b)b.click();})();
 document.querySelectorAll('.mtoc a').forEach(a=>a.onclick=e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 renderHome();
+
+/* Auto-actualización: si se sube una versión nueva, la página se recarga sola (nunca en medio de un cuestionario) */
+const BUILD='1794869845';
+let updPending=false;
+function curView(){return document.querySelector('.view.on')?.id||''}
+function safeView(){return ['v-home','v-mach','v-errors'].includes(curView())}
+async function checkUpd(){
+  if(!/^https?:/.test(location.protocol)) return;
+  try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return;
+    const v=(await r.json()).build; if(v&&v!==BUILD){updPending=true; if(safeView()) location.reload();}}catch(e){}
+}
+setInterval(checkUpd,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden) checkUpd()});
+window.addEventListener('focus',checkUpd);
+setTimeout(checkUpd,3000);
 </script>
 </body>
 </html>
