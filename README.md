@@ -2,8 +2,8 @@
 
 Práctica de preguntas multiple choice de **Arquitectura de Computadoras (ACO, UTN FRC)** para el 2º parcial: Unidad 3 (arquitectura), Unidad 4 (assembler 8086) y Unidad 5 (memorias).
 
-- 594 preguntas sacadas de parciales y cuestionarios anteriores, cada una con la cantidad de veces que apareció.
-- Filtros combinables: Unidad 3, Unidad 4, Unidad 5, Assembler y "Las que más se repiten".
+- 639 preguntas sacadas de parciales y cuestionarios anteriores (incluye los cuestionarios de Nico), cada una con la cantidad de veces que apareció.
+- Filtros combinables: Unidad 3, Unidad 4, Unidad 5, Assembler, "Las que más se repiten" y "Cuestionarios Nico".
 - Una pregunta por pantalla, con corrección al instante y explicación.
 - Repaso de errores y progreso guardado en el navegador.
 
