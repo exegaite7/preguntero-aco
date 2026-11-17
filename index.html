@@ -203,8 +203,17 @@ h1.big{font:800 clamp(88px,13vw,144px)/.86 var(--serif);color:var(--blue);margin
 .qbar .score{font-size:14px;color:var(--ink-2);display:flex;gap:12px}
 .qbar .score b.ok{color:var(--green)}.qbar .score b.bad{color:var(--brick)}
 .qbar .exit{margin-left:auto}
-.track{height:6px;background:#E7E1D4;border-radius:99px;overflow:hidden;margin-bottom:20px}
+.track{height:6px;background:#E7E1D4;border-radius:99px;overflow:hidden;margin-bottom:10px}
+html[data-theme="dark"] .track{background:var(--line)}
 .track i{display:block;height:100%;background:var(--blue);border-radius:99px;transition:width .45s var(--ease)}
+.qnav{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 10px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.qnav:empty{display:none}
+.qnav button{flex:none;scroll-snap-align:end;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-3);font:700 11.5px var(--sans);display:grid;place-items:center;cursor:pointer;transition:border-color .15s var(--ease),background .15s var(--ease),color .15s var(--ease)}
+.qnav button:hover{border-color:var(--ink-3);color:var(--ink)}
+.qnav button.ok{border-color:var(--green-line);background:var(--green-wash);color:var(--green)}
+.qnav button.bad{border-color:var(--brick-line);background:var(--brick-wash);color:var(--brick)}
+.qnav button.partial{border-color:var(--amber);background:var(--amber-wash);color:var(--amber)}
+.qnav button.cur{border-color:var(--blue);border-width:2px;color:var(--blue);box-shadow:0 0 0 2px var(--blue-wash)}
 .qwrap{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:start;max-width:880px}
 .qinfo{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px;position:sticky;top:76px}
 .qinfo .num{font:700 15px var(--sans);color:var(--ink)}
@@ -233,6 +242,8 @@ kbd{font:600 12px var(--mono);background:var(--paper);border:1px solid var(--lin
 .cartel .ans{margin:8px 0 0;font-size:15.5px}
 .cartel .ans ul{margin:4px 0 0;padding-left:18px}
 .cartel .ans li{margin:2px 0;font-weight:600}
+.cartel .ans-missed li{color:var(--green)}
+.cartel .ans-wrong li{color:var(--brick)}
 .cartel .exp{margin:10px 0 0;font-size:15px;color:var(--ink-2);max-width:68ch}
 .cartel .exp b{color:var(--ink)}
 .cartel .prov{margin:10px 0 0;font-size:13px;color:var(--ink-3)}
@@ -396,6 +407,7 @@ kbd{font:600 12px var(--mono);background:var(--paper);border:1px solid var(--lin
     <button class="btn btn-ghost btn-sm exit" id="exit">Terminar</button>
   </div>
   <div class="track" aria-hidden="true"><i id="trackI" style="width:0"></i></div>
+  <nav class="qnav" id="qnav" aria-label="Ir a una pregunta ya respondida"></nav>
   <div class="qwrap">
     <aside class="qinfo" id="qinfo"></aside>
     <div>
@@ -968,7 +980,7 @@ function sheetHTML(q,o={}){
 let Q = null; // {list, i, sel:Set, done:bool, ok, bad, score, wrong:[]}
 function startQuiz(list){
   if(!list.length) return;
-  Q={list,i:0,sel:new Set(),done:false,ok:0,bad:0,score:0,wrong:[]};
+  Q={list,i:0,sel:new Set(),done:false,ok:0,bad:0,score:0,wrong:[],history:[],furthest:0};
   show('quiz'); renderQ();
 }
 /* Puntaje parcial para preguntas de "varias": cada opción correcta marcada suma 1/N,
@@ -987,26 +999,52 @@ function fmtScore(n){
   return (Number.isInteger(r)?String(r):r.toFixed(1)).replace('.',',');
 }
 function renderQ(){
-  const q=Q.list[Q.i]; Q.sel=new Set(); Q.done=false; Q.blanks=null; Q.fillSel=null;
+  const q=Q.list[Q.i]; const hist=Q.history[Q.i];
+  Q.sel = hist ? new Set(hist.sel) : new Set();
+  Q.done = !!hist; Q.blanks=null; Q.fillSel = hist ? (hist.fillSel?[...hist.fillSel]:null) : null;
+  Q.furthest = Math.max(Q.furthest||0, Q.i);
   $('#where').innerHTML=`Pregunta ${Q.i+1} <span>de ${Q.list.length}</span>`;
-  $('#score').innerHTML=`<span><b class="ok">${Q.ok}</b> bien</span><span><b class="bad">${Q.bad}</b> mal</span>`;
-  $('#trackI').style.width = (Q.i/Q.list.length*100)+'%';
+  $('#score').innerHTML = hist
+    ? `<span><b class="ok">${fmtScore(Q.score)}</b> puntos</span><span><b class="bad">${Q.bad}</b> mal</span>`
+    : `<span><b class="ok">${Q.ok}</b> bien</span><span><b class="bad">${Q.bad}</b> mal</span>`;
+  $('#trackI').style.width = (Q.furthest/Q.list.length*100)+'%';
   const s=stats[q.id];
   $('#qinfo').innerHTML=`<span class="num">Pregunta<b>${Q.i+1}</b></span><span>${q.unidad==='U3'?'Arquitectura':q.unidad==='U4'?'Assembler 8086':'Memorias'}</span>${s?`<span>Antes: ${s.ok} bien · ${s.bad} mal</span>`:'<span>Primera vez</span>'}`;
   const sh=$('#qsheet'); sh.innerHTML=sheetHTML(q).replace(/^<div class="sheet[^"]*">/,'').replace(/<\/div>$/,'');
   sh.className='sheet qsheet'+(q.veces>=REP_MIN?' brickrule':'');
   $('#cartelSlot').innerHTML='';
-  $('#check').hidden=false; $('#check').disabled=true; $('#next').hidden=true;
+  $('#check').hidden=!!hist; $('#next').hidden=!hist;
   const blanks = blankSlots(q);
   if(blanks){
     Q.blanks = blanks;
-    setupFillBlank(q, sh);
-    window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+    setupFillBlank(q, sh, hist?hist.fillSel:null);
   } else {
     sh.querySelectorAll('.opt').forEach(b=>b.onclick=()=>toggle(+b.dataset.i));
-    window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
-    sh.querySelector('.opt')?.focus({preventScroll:true});
+    if(!hist) sh.querySelector('.opt')?.focus({preventScroll:true});
+    $('#check').disabled = !Q.sel.size;
   }
+  if(hist){
+    paintFeedback(q, Q.sel, Q.fillSel);
+    setNextLabel();
+  }
+  window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  renderNav();
+}
+function setNextLabel(){
+  $('#next').firstChild.textContent = Q.i===Q.list.length-1 ? 'Ver resultado ' : 'Siguiente ';
+}
+function renderNav(){
+  const nav=$('#qnav'); if(!nav) return;
+  if((Q.furthest||0)<1 && !Q.history[0]){ nav.innerHTML=''; return; }
+  let html='';
+  for(let i=0;i<=Q.furthest;i++){
+    const h=Q.history[i];
+    const cls=(i===Q.i?'cur ':'')+(h?h.estado:'');
+    html+=`<button type="button" class="${cls.trim()}" data-i="${i}" aria-current="${i===Q.i}" aria-label="Ir a la pregunta ${i+1}${h?(h.estado==='ok'?', correcta':h.estado==='partial'?', parcial':', incorrecta'):''}">${i+1}</button>`;
+  }
+  nav.innerHTML=html;
+  nav.querySelectorAll('button').forEach(b=>b.onclick=()=>{ Q.i=+b.dataset.i; renderQ(); });
+  nav.querySelector('button.cur')?.scrollIntoView({inline:'center',block:'nearest'});
 }
 function toggle(i){
   if(Q.done) return; const q=Q.list[Q.i];
@@ -1015,9 +1053,9 @@ function toggle(i){
   $('#check').disabled=!Q.sel.size;
 }
 /* ---------- drag & drop de completar: wiring ---------- */
-function setupFillBlank(q, sh){
+function setupFillBlank(q, sh, restore){
   const slots = Array.from(sh.querySelectorAll('.blank[data-slot]'));
-  Q.fillSel = new Array(slots.length).fill(null);
+  Q.fillSel = restore ? [...restore] : new Array(slots.length).fill(null);
   function sync(){
     Q.sel = new Set(Q.fillSel.filter(v=>v!=null));
     $('#check').disabled = !Q.fillSel.some(v=>v!=null);
@@ -1080,46 +1118,66 @@ function setupFillBlank(q, sh){
   });
   paint(); sync();
 }
-function check(){
-  if(Q.done||!Q.sel.size) return; Q.done=true;
-  const q=Q.list[Q.i], C=new Set(q.correctas);
-  const good = C.size===Q.sel.size && [...C].every(i=>Q.sel.has(i));
-  const pts = credit(q, Q.sel);
+/* Pinta el resultado (colores, cartel) sin tocar puntaje/estadísticas. Se usa al comprobar y al revisar una pregunta ya respondida. */
+function paintFeedback(q, sel, fillSel){
+  const C=new Set(q.correctas);
+  const good = C.size===sel.size && [...C].every(i=>sel.has(i));
+  const pts = credit(q, sel);
   const partial = q.tipo==='varias' && !good && pts>0;
   if(Q.blanks){
     const sh=$('#qsheet');
     sh.querySelectorAll('.chip').forEach(c=>c.disabled=true);
     sh.querySelectorAll('.blank[data-slot]').forEach(s=>{
-      const si=+s.dataset.slot, oi=Q.fillSel[si];
+      const si=+s.dataset.slot, oi=fillSel[si];
+      s.classList.remove('right','wrong');
       s.classList.add(oi!=null&&C.has(oi)?'right':'wrong');
       if(oi==null) s.textContent='—';
     });
   } else {
-  document.querySelectorAll('#qsheet .opt').forEach(b=>{
-    const i=+b.dataset.i; b.disabled=true;
-    if(Q.sel.has(i)&&C.has(i)){b.classList.add('right');b.querySelector('.mk').innerHTML=ICON.check;b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Bien elegida</span>')}
-    else if(Q.sel.has(i)){b.classList.add('wrong');b.querySelector('.mk').innerHTML=ICON.x;b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Esta no va</span>')}
-    else if(C.has(i)){b.classList.add('missed');b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Esta también era correcta</span>')}
-  });
+    document.querySelectorAll('#qsheet .opt').forEach(b=>{
+      const i=+b.dataset.i; b.disabled=true;
+      if(sel.has(i)&&C.has(i)){b.classList.add('right');b.querySelector('.mk').innerHTML=ICON.check;b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Bien elegida</span>')}
+      else if(sel.has(i)){b.classList.add('wrong');b.querySelector('.mk').innerHTML=ICON.x;b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Esta no va</span>')}
+      else if(C.has(i)){b.classList.add('missed');b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Esta también era correcta</span>')}
+    });
   }
-  good?Q.ok++:(Q.bad++,Q.wrong.push(q));
-  Q.score += pts;
-  const s=stats[q.id]||{ok:0,bad:0}; good?s.ok++:s.bad++; s.last=good?'ok':'bad'; stats[q.id]=s; store.set('aco2_stats',stats);
-  const ans=q.correctas.map(i=>`<li>${fmt(q.opciones[i])}</li>`).join('');
   const estado = good ? 'ok' : (partial ? 'partial' : 'bad');
   const titulo = good ? '¡Correcto!' : (partial ? 'Parcialmente correcto' : 'Incorrecto');
   const icono = good ? ICON.check : (partial ? ICON.check : ICON.x);
+  let ansHTML='';
+  if(!good){
+    if(q.tipo==='varias'){
+      const missed = q.correctas.filter(i=>!sel.has(i));
+      const wrongSel = [...sel].filter(i=>!C.has(i));
+      if(missed.length) ansHTML += `<div class="ans ans-missed"><b>Te faltó marcar (eran correctas):</b><ul>${missed.map(i=>`<li>${fmt(q.opciones[i])}</li>`).join('')}</ul></div>`;
+      if(wrongSel.length) ansHTML += `<div class="ans ans-wrong"><b>Marcaste de más (son incorrectas):</b><ul>${wrongSel.map(i=>`<li>${fmt(q.opciones[i])}</li>`).join('')}</ul></div>`;
+    } else {
+      const ans=q.correctas.map(i=>`<li>${fmt(q.opciones[i])}</li>`).join('');
+      ansHTML = `<div class="ans">${q.correctas.length>1?'Las respuestas correctas eran:':'La respuesta correcta era:'}<ul>${ans}</ul></div>`;
+    }
+  }
   $('#cartelSlot').innerHTML=`<div class="cartel ${estado}" role="status">
     <span class="ic">${icono}</span>
     <h3>${titulo}</h3>
     ${partial?`<p class="pts">Sumaste ${Math.round(pts*100)}% de los puntos de esta pregunta.</p>`:''}
-    ${good?'':`<div class="ans">${q.correctas.length>1?'Las respuestas correctas eran:':'La respuesta correcta era:'}<ul>${ans}</ul></div>`}
+    ${ansHTML}
     ${q.explicacion?`<p class="exp"><b>Por qué:</b> ${esc(q.explicacion)}</p>`:''}
     <p class="prov">${SRCLONG[q.fuente]}</p></div>`;
+  return {good,pts,partial,estado};
+}
+function check(){
+  if(Q.done||!Q.sel.size) return; Q.done=true;
+  const q=Q.list[Q.i];
+  const {good,pts,estado} = paintFeedback(q, Q.sel, Q.fillSel);
+  good?Q.ok++:(Q.bad++,Q.wrong.push(q));
+  Q.score += pts;
+  const s=stats[q.id]||{ok:0,bad:0}; good?s.ok++:s.bad++; s.last=good?'ok':'bad'; stats[q.id]=s; store.set('aco2_stats',stats);
+  Q.history[Q.i] = {sel:[...Q.sel], fillSel: Q.fillSel?[...Q.fillSel]:null, estado};
   $('#score').innerHTML=`<span><b class="ok">${fmtScore(Q.score)}</b> puntos</span><span><b class="bad">${Q.bad}</b> mal</span>`;
   $('#check').hidden=true; const n=$('#next'); n.hidden=false;
-  n.firstChild.textContent = Q.i===Q.list.length-1 ? 'Ver resultado ' : 'Siguiente ';
+  setNextLabel();
   n.focus({preventScroll:true});
+  renderNav();
   document.querySelector('.actions').scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 }
 function next(){ if(Q.i<Q.list.length-1){Q.i++;renderQ()} else results() }
@@ -1262,7 +1320,7 @@ document.querySelectorAll('.archwrap').forEach(wireArchDiagram);
 renderHome();
 
 /* Auto-actualización: si se sube una versión nueva, la página se recarga sola (nunca en medio de un cuestionario) */
-const BUILD='1794943883';
+const BUILD='1794944718';
 let updPending=false;
 function curView(){return document.querySelector('.view.on')?.id||''}
 function safeView(){return ['v-home','v-mach','v-errors'].includes(curView())}
