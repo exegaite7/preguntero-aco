@@ -195,6 +195,9 @@ kbd{font:600 12px var(--mono);background:#fff;border:1px solid var(--line-2);bor
 .cartel.ok .ic{background:var(--green)}.cartel.ok h3{color:var(--green)}
 .cartel.bad{background:var(--brick-wash);border-color:var(--brick-line)}
 .cartel.bad .ic{background:var(--brick)}.cartel.bad h3{color:var(--brick)}
+.cartel.partial{background:var(--amber-wash);border-color:#E7CE8A}
+.cartel.partial .ic{background:var(--amber)}.cartel.partial h3{color:var(--amber)}
+.cartel .pts{margin:2px 0 0;font-size:15px;font-weight:700}
 .cartel .ans{margin:8px 0 0;font-size:15.5px}
 .cartel .ans ul{margin:4px 0 0;padding-left:18px}
 .cartel .ans li{margin:2px 0;font-weight:600}
@@ -817,12 +820,27 @@ function sheetHTML(q,o={}){
 }
 
 /* ---------- quiz ---------- */
-let Q = null; // {list, i, sel:Set, done:bool, ok, bad, wrong:[]}
+let Q = null; // {list, i, sel:Set, done:bool, ok, bad, score, wrong:[]}
 function startQuiz(list){
   if(!list.length) return;
   if(prefs.f.includes('REP') && list.every(q=>q.veces)) list = list.slice().sort((a,b)=>b.veces-a.veces);
-  Q={list,i:0,sel:new Set(),done:false,ok:0,bad:0,wrong:[]};
+  Q={list,i:0,sel:new Set(),done:false,ok:0,bad:0,score:0,wrong:[]};
   show('quiz'); renderQ();
+}
+/* Puntaje parcial para preguntas de "varias": cada opción correcta marcada suma 1/N,
+   cada opción incorrecta marcada resta 1/N (N = cantidad de respuestas correctas), piso en 0. */
+function credit(q, sel){
+  if(q.tipo!=='varias'){
+    const C=q.correctas;
+    return (C.length===sel.size && C.every(i=>sel.has(i))) ? 1 : 0;
+  }
+  const C=new Set(q.correctas); let hits=0, misses=0;
+  sel.forEach(i=>C.has(i)?hits++:misses++);
+  return Math.max(0, hits-misses)/C.size;
+}
+function fmtScore(n){
+  const r=Math.round(n*10)/10;
+  return (Number.isInteger(r)?String(r):r.toFixed(1)).replace('.',',');
 }
 function renderQ(){
   const q=Q.list[Q.i]; Q.sel=new Set(); Q.done=false;
@@ -849,6 +867,8 @@ function check(){
   if(Q.done||!Q.sel.size) return; Q.done=true;
   const q=Q.list[Q.i], C=new Set(q.correctas);
   const good = C.size===Q.sel.size && [...C].every(i=>Q.sel.has(i));
+  const pts = credit(q, Q.sel);
+  const partial = q.tipo==='varias' && !good && pts>0;
   document.querySelectorAll('#qsheet .opt').forEach(b=>{
     const i=+b.dataset.i; b.disabled=true;
     if(Q.sel.has(i)&&C.has(i)){b.classList.add('right');b.querySelector('.mk').innerHTML=ICON.check;b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Bien elegida</span>')}
@@ -856,15 +876,20 @@ function check(){
     else if(C.has(i)){b.classList.add('missed');b.querySelector('.t').insertAdjacentHTML('beforeend','<span class="why">Esta también era correcta</span>')}
   });
   good?Q.ok++:(Q.bad++,Q.wrong.push(q));
+  Q.score += pts;
   const s=stats[q.id]||{ok:0,bad:0}; good?s.ok++:s.bad++; s.last=good?'ok':'bad'; stats[q.id]=s; store.set('aco2_stats',stats);
   const ans=q.correctas.map(i=>`<li>${fmt(q.opciones[i])}</li>`).join('');
-  $('#cartelSlot').innerHTML=`<div class="cartel ${good?'ok':'bad'}" role="status">
-    <span class="ic">${good?ICON.check:ICON.x}</span>
-    <h3>${good?'¡Correcto!':'Incorrecto'}</h3>
+  const estado = good ? 'ok' : (partial ? 'partial' : 'bad');
+  const titulo = good ? '¡Correcto!' : (partial ? 'Parcialmente correcto' : 'Incorrecto');
+  const icono = good ? ICON.check : (partial ? ICON.check : ICON.x);
+  $('#cartelSlot').innerHTML=`<div class="cartel ${estado}" role="status">
+    <span class="ic">${icono}</span>
+    <h3>${titulo}</h3>
+    ${partial?`<p class="pts">Sumaste ${Math.round(pts*100)}% de los puntos de esta pregunta.</p>`:''}
     ${good?'':`<div class="ans">${q.correctas.length>1?'Las respuestas correctas eran:':'La respuesta correcta era:'}<ul>${ans}</ul></div>`}
     ${q.explicacion?`<p class="exp"><b>Por qué:</b> ${esc(q.explicacion)}</p>`:''}
     <p class="prov">${SRCLONG[q.fuente]}</p></div>`;
-  $('#score').innerHTML=`<span><b class="ok">${Q.ok}</b> bien</span><span><b class="bad">${Q.bad}</b> mal</span>`;
+  $('#score').innerHTML=`<span><b class="ok">${fmtScore(Q.score)}</b> puntos</span><span><b class="bad">${Q.bad}</b> mal</span>`;
   $('#check').hidden=true; const n=$('#next'); n.hidden=false;
   n.firstChild.textContent = Q.i===Q.list.length-1 ? 'Ver resultado ' : 'Siguiente ';
   n.focus({preventScroll:true});
@@ -873,9 +898,9 @@ function check(){
 function next(){ if(Q.i<Q.list.length-1){Q.i++;renderQ()} else results() }
 function results(){
   $('#trackI').style.width='100%';
-  const tot=Q.ok+Q.bad, pct=tot?Math.round(Q.ok/tot*100):0;
+  const tot=Q.ok+Q.bad, pct=tot?Math.round(Q.score/tot*100):0;
   const msg = !tot? 'No respondiste ninguna pregunta.' : pct>=80? 'Muy bien. Repasá las que fallaste y probá con otro filtro.' : pct>=60? 'Vas bien, pero todavía hay temas flojos. Repasá tus errores antes de seguir.' : 'Hay que reforzar. Mirá abajo las respuestas correctas y repasá tus errores.';
-  $('#res').innerHTML=`<div class="stickers"><img class="sticker" src="${STICKER}" alt=""><img class="sticker s2" src="${STICKER2}" alt=""></div><p class="score-big">${Q.ok}<span> / ${tot}</span></p><h2>${tot?pct+'% de respuestas correctas':'Ronda sin respuestas'}</h2><p>${msg}</p>
+  $('#res').innerHTML=`<div class="stickers"><img class="sticker" src="${STICKER}" alt=""><img class="sticker s2" src="${STICKER2}" alt=""></div><p class="score-big">${fmtScore(Q.score)}<span> / ${tot}</span></p><h2>${tot?pct+'% de respuestas correctas':'Ronda sin respuestas'}</h2><p>${msg}</p>
     <div class="go">${Q.wrong.length?`<button class="btn btn-brick" id="redo">Repasar estas ${Q.wrong.length} que erré</button>`:''}<button class="btn btn-ghost" id="home2">Volver al inicio</button></div>
     ${Q.wrong.length?`<h2 style="margin-top:44px;font-size:24px">Las que fallaste</h2><div class="wrong-list">${Q.wrong.map(wlHTML).join('')}</div>`:''}`;
   const w=Q.wrong.slice();
@@ -925,7 +950,7 @@ document.querySelectorAll('.mtoc a').forEach(a=>a.onclick=e=>{e.preventDefault()
 renderHome();
 
 /* Auto-actualización: si se sube una versión nueva, la página se recarga sola (nunca en medio de un cuestionario) */
-const BUILD='1794869845';
+const BUILD='1794941919';
 let updPending=false;
 function curView(){return document.querySelector('.view.on')?.id||''}
 function safeView(){return ['v-home','v-mach','v-errors'].includes(curView())}
