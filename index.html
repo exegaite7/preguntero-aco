@@ -210,10 +210,10 @@ html[data-theme="dark"] .track{background:var(--line)}
 .qnav:empty{display:none}
 .qnav button{flex:none;scroll-snap-align:end;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-2);background:var(--paper);color:var(--ink-3);font:700 11.5px var(--sans);display:grid;place-items:center;cursor:pointer;transition:border-color .15s var(--ease),background .15s var(--ease),color .15s var(--ease)}
 .qnav button:hover{border-color:var(--ink-3);color:var(--ink)}
-.qnav button.ok{border-color:var(--green-line);background:var(--green-wash);color:var(--green)}
-.qnav button.bad{border-color:var(--brick-line);background:var(--brick-wash);color:var(--brick)}
-.qnav button.partial{border-color:var(--amber);background:var(--amber-wash);color:var(--amber)}
-.qnav button.cur{border-color:var(--blue);border-width:2px;color:var(--blue);box-shadow:0 0 0 2px var(--blue-wash)}
+.qnav button.n-ok{border-color:var(--green-line);background:var(--green-wash);color:var(--green)}
+.qnav button.n-bad{border-color:var(--brick-line);background:var(--brick-wash);color:var(--brick)}
+.qnav button.n-partial{border-color:var(--amber);background:var(--amber-wash);color:var(--amber)}
+.qnav button.cur{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-wash)}
 .qwrap{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:start;max-width:880px}
 .qinfo{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px;position:sticky;top:76px}
 .qinfo .num{font:700 15px var(--sans);color:var(--ink)}
@@ -1039,7 +1039,7 @@ function renderNav(){
   let html='';
   for(let i=0;i<=Q.furthest;i++){
     const h=Q.history[i];
-    const cls=(i===Q.i?'cur ':'')+(h?h.estado:'');
+    const cls=(i===Q.i?'cur ':'')+(h?'n-'+h.estado:'');
     html+=`<button type="button" class="${cls.trim()}" data-i="${i}" aria-current="${i===Q.i}" aria-label="Ir a la pregunta ${i+1}${h?(h.estado==='ok'?', correcta':h.estado==='partial'?', parcial':', incorrecta'):''}">${i+1}</button>`;
   }
   nav.innerHTML=html;
@@ -1205,7 +1205,6 @@ function renderErrors(){
 }
 
 function show(v){
-  if(updPending&&v!=='quiz'&&v!=='res'){location.reload();return}
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
   document.querySelectorAll('.nav button').forEach(b=>{ if(b.dataset.go===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   if(v==='home') renderHome(); if(v==='errors') renderErrors();
@@ -1318,21 +1317,6 @@ function wireArchDiagram(root){
 document.querySelectorAll('.archwrap').forEach(wireArchDiagram);
 
 renderHome();
-
-/* Auto-actualización: si se sube una versión nueva, la página se recarga sola (nunca en medio de un cuestionario) */
-const BUILD='1794944718';
-let updPending=false;
-function curView(){return document.querySelector('.view.on')?.id||''}
-function safeView(){return ['v-home','v-mach','v-errors'].includes(curView())}
-async function checkUpd(){
-  if(!/^https?:/.test(location.protocol)) return;
-  try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'}); if(!r.ok) return;
-    const v=(await r.json()).build; if(v&&v!==BUILD){updPending=true; if(safeView()) location.reload();}}catch(e){}
-}
-setInterval(checkUpd,60000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden) checkUpd()});
-window.addEventListener('focus',checkUpd);
-setTimeout(checkUpd,3000);
 </script>
 </body>
 </html>
